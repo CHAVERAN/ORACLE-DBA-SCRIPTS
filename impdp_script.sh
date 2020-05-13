@@ -44,7 +44,7 @@ echo "Starting" > $LOGFILE
 if [ -f "$EXPORT_PATH/$DMP_FILE" ]
 then
  unzip $EXPORT_PATH/${DMP_FILE} -d / | tee -a $LOGFILE
- impdp system@hrdev directory=DPEXPORTS dumpfile=`echo "$DMP_FILE"|sed 's/.zip//'` logfile=impdp_$CDATE.log parallel=10 table_exists_action=append | tee -a $LOGFILE
+ impdp system@hrdev directory=DPEXPORTS dumpfile=`echo "$DMP_FILE"|sed 's/.zip//'` logfile=impdp_$CDATE.log parallel=10 table_exists_action=SKIP | tee -a $LOGFILE
 
 # MAIL IMPDP STATUS
  if [ "`grep failed $LOGFILE|wc -l`" -gt 0 ]
@@ -53,8 +53,8 @@ then
  else
   mailx -s "oracle : impdp failed" $EMAIL_ADDRESS < $LOGFILE
  fi
- 
-else 
+
+else
 
 # FAIL OUT IF DMP ZIPPED FILE NOT FOUND
  echo -e "\nError: Unable to find export dmp zipped file '$DATAPUMP_DIR_PATH/$DMP_FILE'\n"
